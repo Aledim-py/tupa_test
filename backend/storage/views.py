@@ -5,14 +5,19 @@ import base64
 from django.views.decorators.csrf import csrf_exempt
 import io
 from django.core.files.images import ImageFile
+from .utilities import get_client_ip
 
 from .models import Image, Comment, Tag, User
 # Create your views here.
+
+def getPage(request):
+    return render(request, 'www/index.html')
 
 @csrf_exempt
 def createImage(request):
     file = request.FILES['image']
     file_name = request.POST['title']
+    client_ip = get_client_ip(request)
 
     image = ImageFile(file, name=file_name)
 
@@ -23,7 +28,7 @@ def createImage(request):
     # remember_image = file.read()
     # image = ImageFile(io.BytesIO(remember_image), name='foo.jpg')
     
-    image = Image(title=file_name, image=image)
+    image = Image(title=file_name, image=image, uploader_ip=client_ip)
     image.save()
 
     return JsonResponse({'success':'yes', 'reason': ''})

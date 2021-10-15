@@ -5,12 +5,14 @@ from django.db import models
 class Image(models.Model):
     title = models.CharField(max_length=200)
     image = models.ImageField(upload_to='pic_storage')
+    upload_date_time = models.DateTimeField(auto_now_add=True)
+    uploader_ip = models.CharField(max_length=50)
 
     def __str__(self):
         return self.title
 
 class Tag(models.Model):
-    tag_name = models.CharField(max_length=200, unique=True)
+    tag_name = models.CharField(max_length=200, primary_key=False, unique=True)
     images = models.ManyToManyField(Image)
 
     def __str__(self):
